@@ -21,6 +21,16 @@ public class UserController extends Controller {
         this.ec = ec;
     }
 
+    public CompletionStage<Result> get(int id){
+        return userService.get(id).thenApplyAsync(user -> {
+                    if (user.isPresent()) {
+                        return ok(toJson(user.get()));
+                    } else {
+                        return badRequest("User with id " + id + " not found");
+                    }
+                }, ec.current());
+    }
+
     public CompletionStage<Result> list(){
         return userService.list().thenApplyAsync(
             userStream -> ok(toJson(userStream.collect(Collectors.toList())))

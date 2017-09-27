@@ -2,6 +2,7 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
+GET     /user/:id                 controllers.UserController.get(id: Int)
 
 GET     /user                     controllers.UserController.list
 

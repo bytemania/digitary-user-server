@@ -5,6 +5,7 @@ import models.User;
 import play.db.jpa.Transactional;
 import repository.UserRepository;
 
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
@@ -21,6 +22,12 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public CompletionStage<User> create(User user) {
         return userRepository.create(user);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CompletionStage<Optional<User>> get(int id){
+        return userRepository.get(id);
     }
 
     @Override
