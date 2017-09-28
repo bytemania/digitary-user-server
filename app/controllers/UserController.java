@@ -31,9 +31,14 @@ public class UserController extends Controller {
                 }, ec.current());
     }
 
-    public CompletionStage<Result> list(){
+    public CompletionStage<Result> list(int pageSize, int pageNumber){
+        return userRepository.list(pageSize, pageNumber).thenApplyAsync(
+            paginated -> ok(toJson(paginated)), ec.current());
+    }
+
+    public CompletionStage<Result> listAll(){
         return userRepository.list().thenApplyAsync(
-            userStream -> ok(toJson(userStream.collect(Collectors.toList())))
-            , ec.current());
+                userStream -> ok(toJson(userStream.collect(Collectors.toList())))
+                , ec.current());
     }
 }

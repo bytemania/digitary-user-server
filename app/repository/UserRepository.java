@@ -1,6 +1,7 @@
 package repository;
 
 import com.google.inject.ImplementedBy;
+import models.Paginated;
 import models.User;
 
 import java.util.Optional;
@@ -13,6 +14,8 @@ public interface UserRepository {
     CompletionStage<User> create(User user);
 
     CompletionStage<Optional<User>> get(int id);
+
+    CompletionStage<Paginated<User>> list(int pageSize, int pageNumber);
 
     CompletionStage<Stream<User>> list();
 }

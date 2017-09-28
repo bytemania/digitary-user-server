@@ -1,10 +1,13 @@
 package repository;
 
 import com.google.inject.Inject;
+import models.Paginated;
 import models.User;
 import play.db.jpa.JPAApi;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
@@ -35,6 +38,11 @@ public class JpaUserRepository implements UserRepository {
     }
 
     @Override
+    public CompletionStage<Paginated<User>> list(int pageSize, int pageNumber) {
+        return supplyAsync(() -> wrap(em -> list(em, pageSize, pageNumber)), executionContext);
+    }
+
+    @Override
     public CompletionStage<Stream<User>> list() {
         return supplyAsync(() -> wrap(em -> list(em)), executionContext);
     }
@@ -50,7 +58,6 @@ public class JpaUserRepository implements UserRepository {
         } else {
             return Optional.empty();
         }
-
     }
 
     private User insert(EntityManager em, User user) {
@@ -59,8 +66,25 @@ public class JpaUserRepository implements UserRepository {
     }
 
     private Stream<User> list(EntityManager em) {
-        List<User> persons = em.createQuery("select u from User u", User.class).getResultList();
-        return persons.stream();
+        List<User> users = em.createQuery("select u from User u", User.class).getResultList();
+        return users.stream();
+    }
+
+    private Paginated<User> list(EntityManager em, int pageSize, int pageNumber) {
+        Query queryTotal = em.createQuery("Select count(u.id) from User u");
+        long totalRecords = (long)queryTotal.getSingleResult();
+
+        List<User> users;
+        if ((pageNumber - 1) * pageSize > totalRecords) {
+            users = new ArrayList<>();
+        } else {
+            users = em.createQuery("select u from User u", User.class)
+                    .setFirstResult((pageNumber - 1) * pageSize)
+                    .setMaxResults(pageSize)
+                    .getResultList();
+        }
+
+        return new Paginated(pageSize, pageNumber, new Long(totalRecords).intValue(), users);
     }
 
 }

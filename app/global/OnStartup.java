@@ -41,7 +41,7 @@ public class OnStartup {
         contact.setCity("city" + i);
         contact.setPostalCode("postalCode" + i);
         contact.setCountry("country" + i);
-        List<String> phones = Arrays.asList("000_" + i, "111_" + i, "222_" + i);
+        List<String> phones = Arrays.asList("000000" + i, "111111" + i, "222222" + i);
         contact.setPhones(phones);
 
         user.setContact(contact);
