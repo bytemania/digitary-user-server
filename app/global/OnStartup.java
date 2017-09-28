@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import models.Contact;
 import models.User;
 import play.Logger;
-import service.UserService;
+import repository.UserRepository;
 
 import javax.inject.Singleton;
 import java.util.Arrays;
@@ -15,18 +15,18 @@ import java.util.stream.IntStream;
 public class OnStartup {
 
     private static final Logger.ALogger logger = Logger.of(OnStartup.class);
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     @Inject
-    public OnStartup(UserService userService) {
-        this.userService = userService;
+    public OnStartup(UserRepository userRepository) {
+        this.userRepository = userRepository;
         seed();
     }
 
     private void seed()
     {
         logger.info("Seeding data...");
-        IntStream.rangeClosed(1, 100).forEach(i -> userService.create(createUser(i)));
+        IntStream.rangeClosed(1, 100).forEach(i -> userRepository.create(createUser(i)));
     }
 
     private User createUser(int i)
