@@ -5,8 +5,10 @@ import models.Contact;
 import models.User;
 import play.Logger;
 import repository.UserRepository;
+import util.Util;
 
 import javax.inject.Singleton;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -31,8 +33,13 @@ public class OnStartup {
 
     private User createUser(int i)
     {
+        final int DAY_MINUTES = 60*24;
+
         User user = new User();
         user.setName("name" + i);
+
+        Timestamp ts = Util.subtractMinutesCurrTime(DAY_MINUTES * i);
+        user.setDate(ts);
 
         Contact contact = new Contact();
         contact.setEmail("email@example.org" +i);

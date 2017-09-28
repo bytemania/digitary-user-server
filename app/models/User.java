@@ -1,6 +1,8 @@
 package models;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
+import java.util.Date;
 
 @Entity
 public class User {
@@ -14,13 +16,17 @@ public class User {
     @JoinColumn(name="CONTACT_ID", unique=true, nullable=false, updatable=false)
     private Contact contact;
 
+    private Timestamp date;
+
     public User() {
+        this.date = new Timestamp(new Date().getTime());
     }
 
     public User(int id, String name, Contact contact) {
         this.id = id;
         this.name = name;
         this.contact = contact;
+        this.date = new Timestamp(new Date().getTime());
     }
 
     public int getId() {
@@ -45,6 +51,14 @@ public class User {
 
     public void setContact(Contact contact) {
         this.contact = contact;
+    }
+
+    public Timestamp getDate() {
+        return date;
+    }
+
+    public void setDate(Timestamp date) {
+        this.date = date;
     }
 
     @Override

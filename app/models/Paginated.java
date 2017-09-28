@@ -7,6 +7,7 @@ public class Paginated<T> {
     int pageSize;
     int pageNumber;
     int pageCount;
+    int size;
     List<T> data;
 
     public Paginated() {
@@ -15,8 +16,8 @@ public class Paginated<T> {
     public Paginated(int pageSize, int pageNumber, int totalRecords, List<T> data) {
         this.pageSize = pageSize;
         this.pageNumber = pageNumber;
-
         this.pageCount = Double.valueOf(Math.ceil(((double)totalRecords / pageSize))).intValue();
+        this.size = data.size();
         this.data = data;
     }
 
@@ -42,6 +43,14 @@ public class Paginated<T> {
 
     public void setPageCount(int pageCount) {
         this.pageCount = pageCount;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
     }
 
     public List<T> getData() {

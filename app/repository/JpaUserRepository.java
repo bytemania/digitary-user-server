@@ -7,6 +7,7 @@ import play.db.jpa.JPAApi;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,8 +39,13 @@ public class JpaUserRepository implements UserRepository {
     }
 
     @Override
-    public CompletionStage<Paginated<User>> list(int pageSize, int pageNumber) {
-        return supplyAsync(() -> wrap(em -> list(em, pageSize, pageNumber)), executionContext);
+    public CompletionStage<Paginated<User>> list(int pageSize, int pageNumber, Timestamp sinceTs) {
+        return supplyAsync(() -> wrap(em -> list(em, pageSize, pageNumber, sinceTs)), executionContext);
+    }
+
+    @Override
+    public CompletionStage<Integer> getTotalPages(int pageSize, Timestamp sinceTs) {
+        return supplyAsync(() -> wrap(em -> getTotalPages(em, pageSize, sinceTs)), executionContext);
     }
 
     @Override
@@ -70,15 +76,17 @@ public class JpaUserRepository implements UserRepository {
         return users.stream();
     }
 
-    private Paginated<User> list(EntityManager em, int pageSize, int pageNumber) {
-        Query queryTotal = em.createQuery("Select count(u.id) from User u");
+    private Paginated<User> list(EntityManager em, int pageSize, int pageNumber, Timestamp sinceTs) {
+        Query queryTotal = em.createQuery("Select count(u.id) from User u where u.date > :date")
+                .setParameter("date", sinceTs);
         long totalRecords = (long)queryTotal.getSingleResult();
 
         List<User> users;
         if ((pageNumber - 1) * pageSize > totalRecords) {
             users = new ArrayList<>();
         } else {
-            users = em.createQuery("select u from User u", User.class)
+            users = em.createQuery("select u from User u where u.date > :date")
+                    .setParameter("date", sinceTs)
                     .setFirstResult((pageNumber - 1) * pageSize)
                     .setMaxResults(pageSize)
                     .getResultList();
@@ -87,4 +95,11 @@ public class JpaUserRepository implements UserRepository {
         return new Paginated(pageSize, pageNumber, new Long(totalRecords).intValue(), users);
     }
 
+    private Integer getTotalPages(EntityManager em, int pageSize, Timestamp sinceTs) {
+        Query queryTotal = em.createQuery("Select count(u.id) from User u where u.date > :date")
+                .setParameter("date", sinceTs);
+        long totalRecords = (long)queryTotal.getSingleResult();
+
+        return Double.valueOf(Math.ceil(((double)totalRecords / pageSize))).intValue();
+    }
 }

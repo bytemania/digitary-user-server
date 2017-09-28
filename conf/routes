@@ -4,7 +4,9 @@
 
 GET     /user/:id                 controllers.UserController.get(id: Int)
 
-GET     /user                     controllers.UserController.list(pageSize:Int ?=10, pageNumber:Int ?= 0)
+GET     /user                     controllers.UserController.list(pageSize:Int ?= 10, pageNumber:Int ?= 0, since: Int ?= 525600)
+
+GET     /page                     controllers.UserController.getTotalPages(pageSize: Int ?= 10, since: Int ?= 525600)
 
 GET     /userall                  controllers.UserController.listAll
 
