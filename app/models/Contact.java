@@ -1,29 +1,41 @@
 package models;
 
+import play.data.validation.Constraints;
+
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 public class Contact {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name = "CONTACT_ID")
-    private int id;
+    private String id;
+
+    @Constraints.Required(message = "user.validation.email.required")
+    @Constraints.Email(message = "user.validation.email.invalid")
     private String email;
+    @Constraints.Required(message = "user.validation.address1.required")
     private String address1;
     private String address2;
+    @Constraints.Required(message = "user.validation.city.required")
     private String city;
     private String postalCode;
+    @Constraints.Required(message = "user.validation.country")
     private String country;
 
+    @Size(max = 3, message = "user.validation.phone.size")
     @ElementCollection(targetClass=String.class, fetch = FetchType.EAGER)
     private List<String> phones;
 
     public Contact() {
+        id = UUID.randomUUID().toString();
     }
 
     public Contact(String email, String address1, String address2, String city, String postalCode, String country, List<String> phones) {
+        id = UUID.randomUUID().toString();
         this.email = email;
         this.address1 = address1;
         this.address2 = address2;
@@ -33,11 +45,11 @@ public class Contact {
         this.phones = phones;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

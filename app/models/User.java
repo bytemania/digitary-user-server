@@ -1,5 +1,7 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -57,6 +59,7 @@ public class User {
         return date;
     }
 
+    @JsonIgnore
     public void setDate(Timestamp date) {
         this.date = date;
     }

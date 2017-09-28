@@ -53,7 +53,7 @@ public class UserController extends Controller {
         Timestamp sinceTs = Util.subtractMinutesCurrTime(since);
         return userRepository.getTotalPages(pageSize, sinceTs).thenApplyAsync(
                 nPages -> {
-                    DateFormat df = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String reportDate = df.format(sinceTs);
 
                     ObjectNode result = Json.newObject();
