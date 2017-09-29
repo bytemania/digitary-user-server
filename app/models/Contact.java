@@ -1,5 +1,6 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import play.data.validation.Constraints;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ public class Contact {
 
     @Id
     @Column(name = "CONTACT_ID")
+    @JsonIgnore
     private String id;
 
     @Constraints.Required(message = "user.validation.email.required")
